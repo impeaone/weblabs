@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">Счетчик посещений</h3>
+            </div>
+            <div class="card-body text-center">
+                <div class="display-1 mb-4 text-primary">{{ count }}</div>
+                <p class="lead">
+                    Количество ваших посещений этой страницы
+                </p>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Информация о посещениях:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded">
+                                    <h6>Текущее количество:</h6>
+                                    <h4 class="text-primary">{{ count }}</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded">
+                                    <h6>Последнее посещение:</h6>
+                                    <h6 class="text-success">{{ last_visit }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>Техническая информация:</strong> 
+                    Счетчик работает на основе Flask session. Данные хранятся в cookies вашего браузера.
+                    {% if not current_user.is_authenticated %}
+                    <br><small>Счетчик не связан с вашей учетной записью и будет сброшен при очистке cookies браузера.</small>
+                    {% endif %}
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                    <a href="{{ url_for('counter') }}" class="btn btn-primary me-md-2">
+                        <i class="bi bi-arrow-clockwise"></i> Обновить страницу (+1 к счетчику)
+                    </a>
+                    <a href="{{ url_for('reset_counter') }}" class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i> Сбросить счетчик
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary ms-md-2">
+                        <i class="bi bi-house"></i> На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Добро пожаловать в Flask Auth App!</h3>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Функционал приложения:</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item">
+                        <strong>Счетчик посещений</strong> - отслеживание количества ваших визитов с использованием сессий
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Аутентификация</strong> - вход в систему с логином "user" и паролем "qwerty"
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Запомнить меня</strong> - функция сохранения сессии после закрытия браузера
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Секретная страница</strong> - доступна только авторизованным пользователям
+                    </li>
+                </ul>
+                
+                {% if not current_user.is_authenticated %}
+                <div class="alert alert-info">
+                    <strong>Для доступа ко всем функциям:</strong> войдите в систему с логином <code>user</code> и паролем <code>qwerty</code>
+                </div>
+                {% else %}
+                <div class="alert alert-success">
+                    <strong>Вы успешно авторизованы!</strong> Теперь у вас есть доступ ко всем функциям приложения.
+                </div>
+                {% endif %}
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                    <a href="{{ url_for('counter') }}" class="btn btn-primary me-md-2">
+                        <i class="bi bi-counter"></i> Перейти к счетчику посещений
+                    </a>
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('login') }}" class="btn btn-success">
+                        <i class="bi bi-box-arrow-in-right"></i> Войти в систему
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('secret') }}" class="btn btn-warning">
+                        <i class="bi bi-shield-lock"></i> Секретная страница
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
