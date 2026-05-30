@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header {% if is_valid %}bg-success text-white{% else %}bg-danger text-white{% endif %}">
+                <h4 class="mb-0">Результат проверки телефона</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Введенный номер:</strong> {{ phone_input }}
+                </div>
+                
+                {% if is_valid %}
+                    <div class="alert alert-success">
+                        <strong>✓ Номер телефона корректен</strong>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Отформатированный номер:</strong> 
+                        <span class="fs-5 text-primary">{{ formatted_phone }}</span>
+                    </div>
+                {% elif error_message %}
+                    <div class="alert alert-danger">
+                        <strong>✗ Ошибка:</strong> {{ error_message }}
+                    </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <a href="/phone-form" class="btn btn-primary">Проверить другой номер</a>
+                    <a href="/" class="btn btn-secondary">На главную</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

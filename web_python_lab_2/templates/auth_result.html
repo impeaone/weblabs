@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Данные авторизации</h4>
+            </div>
+            <div class="card-body">
+                <h5>Введенные данные:</h5>
+                <div class="mb-3">
+                    <strong>Имя пользователя:</strong> {{ username }}
+                </div>
+                <div class="mb-3">
+                    <strong>Пароль:</strong> {{ password }}
+                </div>
+                <p class="text-muted">Это демонстрационная страница. В реальном приложении пароль не отображается.</p>
+                
+                <div class="mt-3">
+                    <a href="/auth-form" class="btn btn-primary">Вернуться к форме</a>
+                    <a href="/" class="btn btn-secondary">На главную</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
