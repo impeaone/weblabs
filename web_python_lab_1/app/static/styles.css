@@ -1,0 +1,28 @@
+body {
+    font-size: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.avatar {
+    max-width: 100%;
+}
+
+main {
+    flex: 1;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.media {
+    display: flex;
+    align-items: flex-start;
+}
+
+.media-body {
+    flex: 1;
+    margin-left: 15px;
+}
