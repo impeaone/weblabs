@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика по страницам{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1><i class="fas fa-chart-bar"></i> Статистика посещений по страницам</h1>
+    <div>
+        <a href="{{ url_for('reports.export_page_stats') }}" class="btn btn-primary">
+            <i class="fas fa-download"></i> Экспорт в CSV
+        </a>
+        <a href="{{ url_for('reports.visit_logs') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад к журналу
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Страница</th>
+                <th>Количество посещений</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in stats %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ stat.path }}</td>
+                    <td>{{ stat.visits }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">Данные не найдены</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

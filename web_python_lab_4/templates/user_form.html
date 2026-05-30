@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% if is_admin_form %}
+    {{ render_field('role_id', 'Роль', form_data.role_id, type='select', errors=errors.get('role_id', [])) }}
+{% endif %}
+{% macro render_field(field_name, label, value='', type='text', required=false, errors=[], is_edit=false, readonly=false) %}
+    <div class="form-group {% if errors %}has-error{% endif %}">
+        <label for="{{ field_name }}">
+            {% if field_name == 'username' %}<i class="fas fa-user"></i>
+            {% elif field_name == 'password' %}<i class="fas fa-lock"></i>
+            {% elif field_name == 'first_name' %}<i class="fas fa-user-tag"></i>
+            {% elif field_name == 'last_name' %}<i class="fas fa-user-tag"></i>
+            {% elif field_name == 'middle_name' %}<i class="fas fa-user-tag"></i>
+            {% endif %}
+            {{ label }}{% if required %} *{% endif %}
+        </label>
+
+        {% if type == 'select' %}
+            <select id="{{ field_name }}"
+                    name="{{ field_name }}"
+                    {% if readonly %}readonly{% endif %}
+                    class="{% if errors %}error{% endif %}">
+                <option value="">Не выбрана</option>
+                {% for role in roles %}
+                    <option value="{{ role.id }}"
+                            {% if value == role.id|string %}selected{% endif %}>
+                        {{ role.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <input type="{{ type }}"
+                   id="{{ field_name }}"
+                   name="{{ field_name }}"
+                   value="{{ value }}"
+                   {% if required and not is_edit %}required{% endif %}
+                   {% if readonly %}readonly{% endif %}
+                   class="{% if errors %}error{% endif %}"
+                   placeholder="Введите {{ label|lower }}">
+        {% endif %}
+
+        {% if errors %}
+            <div class="error-messages">
+                {% for error in errors %}
+                    <span class="error-message"><i class="fas fa-exclamation-circle"></i> {{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% block title %}
+    {% if is_edit %}Редактирование пользователя{% else %}Создание пользователя{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>
+        <i class="fas {% if is_edit %}fa-edit{% else %}fa-plus{% endif %}"></i>
+        {% if is_edit %}Редактирование пользователя{% else %}Создание пользователя{% endif %}
+    </h1>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Назад к списку
+    </a>
+</div>
+
+<div class="form-container">
+    <form method="POST"
+          action="{% if is_edit %}{{ url_for('edit_user', user_id=form_data.id) }}{% else %}{{ url_for('create_user') }}{% endif %}"
+          class="user-form">
+
+        {% if not is_edit %}
+            {{ render_field('username', 'Логин', form_data.username, required=true, errors=errors.get('username', [])) }}
+            {{ render_field('password', 'Пароль', '', type='password', required=true, errors=errors.get('password', [])) }}
+        {% endif %}
+
+        {{ render_field('first_name', 'Имя', form_data.first_name, required=true, errors=errors.get('first_name', [])) }}
+        {{ render_field('last_name', 'Фамилия', form_data.last_name, errors=errors.get('last_name', [])) }}
+        {{ render_field('middle_name', 'Отчество', form_data.middle_name, errors=errors.get('middle_name', [])) }}
+
+        {{ render_field('role_id', 'Роль', form_data.role_id, type='select', errors=errors.get('role_id', [])) }}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить
+            </button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Отмена
+            </a>
+        </div>
+    </form>
+
+    {% if not is_edit %}
+    <div class="form-help">
+        <h3><i class="fas fa-info-circle"></i> Требования к данным:</h3>
+        <ul>
+            <li><strong>Логин:</strong> только латинские буквы и цифры, минимум 5 символов</li>
+            <li><strong>Пароль:</strong> минимум 8 символов, максимум 128, обязательно: заглавная и строчная буква, цифра, без пробелов</li>
+            <li><strong>Имя:</strong> обязательно для заполнения</li>
+            <li><strong>Фамилия и отчество:</strong> не обязательны</li>
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

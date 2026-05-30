@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Просмотр пользователя{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1><i class="fas fa-user"></i> Просмотр пользователя</h1>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Назад к списку
+    </a>
+</div>
+
+<div class="user-details">
+    <table class="details-table">
+        <tr>
+            <th>ID:</th>
+            <td>{{ user.id }}</td>
+        </tr>
+        <tr>
+            <th>Логин:</th>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <th>Фамилия:</th>
+            <td>{{ user.last_name or 'Не указана' }}</td>
+        </tr>
+        <tr>
+            <th>Имя:</th>
+            <td>{{ user.first_name }}</td>
+        </tr>
+        <tr>
+            <th>Отчество:</th>
+            <td>{{ user.middle_name or 'Не указано' }}</td>
+        </tr>
+        <tr>
+            <th>Роль:</th>
+            <td>{{ user.role_name or 'Не назначена' }}</td>
+        </tr>
+        <tr>
+            <th>Дата создания:</th>
+            <td>{{ user.created_at }}</td>
+        </tr>
+    </table>
+
+    <div class="user-actions">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+        {% if session.user_id %}
+            <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Редактировать
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

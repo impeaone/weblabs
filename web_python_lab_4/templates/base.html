@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Управление пользователями{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                <i class="fas fa-users"></i> Управление пользователями
+            </a>
+            <div class="nav-menu">
+                {% if session.user_id %}
+                    <span class="nav-user">
+                        <i class="fas fa-user"></i>
+                        {{ session.first_name }} {{ session.last_name }}
+                    </span>
+                    <a href="{{ url_for('change_password') }}" class="nav-link">
+                        <i class="fas fa-key"></i> Изменить пароль
+                    </a>
+                    {% if session.user_id %}
+                    <a href="{{ url_for('reports.visit_logs') }}" class="nav-link">
+                        <i class="fas fa-history"></i> Журнал посещений
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Выход
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i> Вход
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Flash сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">
+                            {{ message }}
+                            <button class="flash-close" onclick="this.parentElement.style.display='none'">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Основной контент -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Модальное окно удаления -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Подтверждение удаления</h3>
+            <p id="deleteMessage">Вы уверены, что хотите удалить пользователя?</p>
+            <div class="modal-actions">
+                <button id="confirmDelete" class="btn btn-danger">Да, удалить</button>
+                <button id="cancelDelete" class="btn btn-secondary">Нет, отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Обработка модального окна удаления
+        let currentDeleteUrl = '';
+
+        function openDeleteModal(userId, userName) {
+            const modal = document.getElementById('deleteModal');
+            const message = document.getElementById('deleteMessage');
+            message.textContent = `Вы уверены, что хотите удалить пользователя ${userName}?`;
+            currentDeleteUrl = `/user/${userId}/delete`;
+            modal.style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.style.display = 'none';
+            currentDeleteUrl = '';
+        }
+
+        // Закрытие модального окна
+        document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
+
+        // Подтверждение удаления
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (!currentDeleteUrl) return;
+
+            fetch(currentDeleteUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    window.location.reload();
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+                closeDeleteModal();
+            })
+            .catch(error => {
+                alert('Ошибка при удалении: ' + error);
+                closeDeleteModal();
+            });
+        });
+
+        // Закрытие модального окна при клике вне его
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target === modal) {
+                closeDeleteModal();
+            }
+        });
+
+        // Закрытие flash сообщений
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const flashes = document.querySelectorAll('.flash');
+                flashes.forEach(flash => {
+                    flash.style.display = 'none';
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
